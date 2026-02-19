@@ -8,7 +8,7 @@ import { ReadProvider } from "./_read-context";
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "Concierge — AI Travel Communications",
+  title: "Envoy — AI Travel Communications",
   description: "AI communication assistant for luxury travel advisors",
 };
 

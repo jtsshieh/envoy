@@ -97,6 +97,35 @@
 }
 
 /* Scrollbar styling */
+/* Disable text selection globally; re-enable only for message content */
+body {
+  user-select: none;
+  cursor: default;
+}
+
+/* Only message body text is selectable */
+.message-body {
+  user-select: text;
+  cursor: text;
+}
+
+input, textarea, [contenteditable] {
+  user-select: text;
+  cursor: text;
+}
+
+/* Force all non-text interactive controls to keep default cursor */
+a,
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+summary {
+  cursor: default !important;
+  user-select: none;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

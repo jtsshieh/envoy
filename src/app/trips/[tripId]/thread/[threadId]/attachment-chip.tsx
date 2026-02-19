@@ -8,9 +8,11 @@ import { AttachmentLightbox } from "../../attachments/attachment-lightbox";
 export function AttachmentChip({
   attachment,
   outbound,
+  sourceBadge,
 }: {
   attachment: Attachment;
   outbound: boolean;
+  sourceBadge?: string;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -68,6 +70,17 @@ export function AttachmentChip({
           >
             {attachment.size}
           </p>
+          {sourceBadge && (
+            <span
+              className={`inline-flex mt-1 text-[9px] px-1.5 py-0.5 rounded-full border ${
+                outbound
+                  ? "text-white/75 border-white/25"
+                  : "text-[#385C97] bg-[#E7F0FF] border-[#CFE0FF]"
+              }`}
+            >
+              {sourceBadge}
+            </span>
+          )}
         </div>
       </button>
     </>

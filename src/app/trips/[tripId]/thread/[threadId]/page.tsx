@@ -14,5 +14,5 @@ export default async function ThreadPage({
   const thread = trip.threads.find((t) => t.id === threadId);
   if (!thread) notFound();
 
-  return <ThreadClient thread={thread} tripId={tripId} />;
+  return <ThreadClient thread={thread} tripId={tripId} travelers={trip.travelers} tripNotes={trip.notes ?? ""} />;
 }

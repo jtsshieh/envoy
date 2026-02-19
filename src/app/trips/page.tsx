@@ -224,9 +224,9 @@ export default function TripsPage() {
 
       <div className="flex-1 overflow-y-auto">
         {/* Header */}
-        <div className="px-10 pt-9 pb-6 border-b border-[#E5E0D8] bg-white flex items-end justify-between">
+        <div className="px-8 pt-8 pb-6 border-b border-[#E5E0D8] bg-white flex items-end justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-[#1C2B4A]">Trips</h1>
+            <h1 className="text-xl font-semibold text-[#1C2B4A]">Trips</h1>
             <p className="text-sm text-[#7A7265] mt-1">
               {allTrips.length} active trip{allTrips.length !== 1 ? "s" : ""}
               {totalPending > 0 && (

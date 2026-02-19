@@ -17,8 +17,17 @@ export default async function TripLayout({
   const trip = getTripById(tripId);
   if (!trip) notFound();
 
-  const attachmentCount = getAttachmentsForTrip(tripId).length;
-  const itineraryCount = trip.itinerary.length;
+  const allAttachments = getAttachmentsForTrip(tripId);
+  const attachmentCount = allAttachments.length;
+  const invoiceCount = allAttachments.filter(
+    (a) =>
+      a.type === "pdf" &&
+      (a.tags?.includes("invoice") ||
+        a.tags?.includes("receipt") ||
+        a.tags?.includes("confirmation") ||
+        a.name.toLowerCase().includes("invoice") ||
+        a.name.toLowerCase().includes("receipt")),
+  ).length;
 
   return (
     <div className="flex flex-col flex-1 min-h-0 h-full">
@@ -59,19 +68,15 @@ export default async function TripLayout({
         <TripLayoutClient
           tripId={tripId}
           attachmentCount={attachmentCount}
-          itineraryCount={itineraryCount}
+          travelerCount={trip.travelers.length}
+          invoiceCount={invoiceCount}
         />
       </div>
 
       {/* Body — two-panel for threads, full-width for attachments */}
       <TripBodyClient
         threadList={
-          <div className="w-[280px] shrink-0 border-r border-[#E5E0D8] bg-white flex flex-col overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#E5E0D8]">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-[#7A7265]">
-                Operator Threads
-              </p>
-            </div>
+          <div className="w-[320px] shrink-0 border-r border-[#E5E0D8] bg-white flex flex-col overflow-hidden">
             <ThreadList trip={trip} />
           </div>
         }

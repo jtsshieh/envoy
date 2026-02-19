@@ -3,14 +3,14 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { trips } from "@/lib/data";
-import { Search, Map, MessageSquare, X } from "lucide-react";
+import { Search, Map, MessageSquare, FileText, X } from "lucide-react";
 
 interface ResultItem {
   id: string;
   label: string;
   sublabel: string;
   href: string;
-  type: "trip" | "thread";
+  type: "trip" | "thread" | "message";
 }
 
 function buildIndex(): ResultItem[] {
@@ -31,6 +31,17 @@ function buildIndex(): ResultItem[] {
         href: `/trips/${trip.id}/thread/${thread.id}`,
         type: "thread",
       });
+      for (const message of thread.messages) {
+        if (message.messageType !== undefined || !message.body.trim()) continue;
+        const truncated = message.body.length > 70 ? `${message.body.slice(0, 70)}…` : message.body;
+        items.push({
+          id: `message-${trip.id}-${thread.id}-${message.id}`,
+          label: truncated,
+          sublabel: `${thread.operatorName} · ${trip.destination}`,
+          href: `/trips/${trip.id}/thread/${thread.id}`,
+          type: "message",
+        });
+      }
     }
   }
   return items;
@@ -45,18 +56,21 @@ export function CommandPalette() {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const filtered = query.trim()
+  const hasQuery = query.trim().length > 0;
+
+  const filtered = hasQuery
     ? ALL_ITEMS.filter(
         (item) =>
           item.label.toLowerCase().includes(query.toLowerCase()) ||
           item.sublabel.toLowerCase().includes(query.toLowerCase())
       )
-    : ALL_ITEMS.slice(0, 8);
+    : ALL_ITEMS.filter((i) => i.type !== "message").slice(0, 8);
 
   const trips_results = filtered.filter((i) => i.type === "trip");
   const thread_results = filtered.filter((i) => i.type === "thread");
+  const messages_results = hasQuery ? filtered.filter((i) => i.type === "message") : [];
 
-  const flatList = [...trips_results, ...thread_results];
+  const flatList = [...trips_results, ...thread_results, ...messages_results];
 
   const close = useCallback(() => {
     setOpen(false);
@@ -133,7 +147,7 @@ export function CommandPalette() {
               setQuery(e.target.value);
               setCursor(0);
             }}
-            placeholder="Search trips, operators…"
+            placeholder="Search trips, operators, messages…"
             className="flex-1 text-sm text-[#1C2B4A] placeholder:text-[#A8A099] bg-transparent focus:outline-none"
           />
           {query && (
@@ -169,6 +183,15 @@ export function CommandPalette() {
                 <ResultGroup
                   label="Threads"
                   items={thread_results}
+                  cursor={cursor}
+                  flatList={flatList}
+                  onSelect={navigate}
+                />
+              )}
+              {messages_results.length > 0 && (
+                <ResultGroup
+                  label="Messages"
+                  items={messages_results}
                   cursor={cursor}
                   flatList={flatList}
                   onSelect={navigate}
@@ -224,13 +247,19 @@ function ResultGroup({
           >
             <div
               className={`size-7 rounded-lg flex items-center justify-center shrink-0 ${
-                item.type === "trip" ? "bg-[#1C2B4A]/10" : "bg-amber-50"
+                item.type === "trip"
+                  ? "bg-[#1C2B4A]/10"
+                  : item.type === "thread"
+                  ? "bg-amber-50"
+                  : "bg-emerald-50"
               }`}
             >
               {item.type === "trip" ? (
                 <Map className="size-3.5 text-[#1C2B4A]" />
-              ) : (
+              ) : item.type === "thread" ? (
                 <MessageSquare className="size-3.5 text-[#8B6914]" />
+              ) : (
+                <FileText className="size-3.5 text-emerald-700" />
               )}
             </div>
             <div className="flex-1 min-w-0">
