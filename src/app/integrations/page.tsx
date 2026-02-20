@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Building2, FileText, Plug, RefreshCw } from "lucide-react";
+import { Building2, FileText, Mail, MessageSquareText, Phone, Plug, RefreshCw } from "lucide-react";
 import { integrations, type Integration, type IntegrationConfig } from "@/lib/integrations-data";
 
 // ─── Toggle ───────────────────────────────────────────────────────────────────
@@ -132,6 +132,24 @@ function ConfigPanel({
 
 // ─── Integration Card ──────────────────────────────────────────────────────────
 
+const PROVIDER_ICONS: Record<string, React.ElementType> = {
+  email: Mail,
+  sms: MessageSquareText,
+  phone: Phone,
+};
+
+const PROVIDER_LOGOS: Record<string, string> = {
+  whatsapp: "/logos/whatsapp.svg",
+  salesforce: "/logos/salesforce.svg",
+  hubspot: "/logos/hubspot.svg",
+  travefy: "/logos/travefy.png",
+  tern: "/logos/tern.svg",
+  zoho: "/logos/zoho.svg",
+  stripe: "/logos/stripe.svg",
+  quickbooks: "/logos/quickbooks.svg",
+  xero: "/logos/xero.svg",
+};
+
 const PROVIDER_COLORS: Record<string, string> = {
   email: "bg-blue-100 text-blue-700",
   whatsapp: "bg-green-100 text-green-700",
@@ -182,13 +200,21 @@ function IntegrationCard({
   const isConnected = integration.status === "connected";
   const colorCls = PROVIDER_COLORS[integration.id] ?? "bg-[#F0EDE8] text-[#1C2B4A]";
   const initials = PROVIDER_INITIALS[integration.id] ?? integration.name.slice(0, 2).toUpperCase();
+  const logo = PROVIDER_LOGOS[integration.id];
+  const ProviderIcon = PROVIDER_ICONS[integration.id];
 
   return (
     <div>
       <div className="flex items-center gap-4 px-6 py-4">
         {/* Icon box */}
-        <div className={`size-10 rounded-xl flex items-center justify-center text-xs font-bold shrink-0 ${colorCls}`}>
-          {initials}
+        <div className={`size-10 rounded-xl flex items-center justify-center shrink-0 overflow-hidden ${logo ? "bg-white border border-[#E5E0D8] p-1.5" : colorCls}`}>
+          {logo ? (
+            <img src={logo} alt={integration.name} className="w-full h-full object-contain" />
+          ) : ProviderIcon ? (
+            <ProviderIcon className="size-5" />
+          ) : (
+            <span className="text-xs font-bold">{initials}</span>
+          )}
         </div>
 
         {/* Name + sublabel */}
