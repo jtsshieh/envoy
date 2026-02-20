@@ -10,7 +10,6 @@ import {
   Map,
   Plug,
   Settings,
-  Sparkles,
   Search,
   ChevronLeft,
   ChevronRight,
@@ -62,9 +61,7 @@ export function Sidebar() {
       {/* Logo + collapse toggle */}
       <div className="px-3 pt-5 pb-4 border-b border-[#2D3F63] flex items-center justify-between gap-2">
         <Link href="/" className={`flex items-center gap-2.5 ${collapsed ? "justify-center w-full" : "flex-1 min-w-0"}`}>
-          <div className="size-7 rounded-lg bg-[#C9A84C] flex items-center justify-center shrink-0">
-            <Sparkles className="size-4 text-[#1C2B4A]" />
-          </div>
+          <img src="/logo.png" alt="Envoy" className="size-7 rounded-lg object-contain shrink-0" />
           {!collapsed && (
             <span className="text-base font-semibold tracking-tight text-white truncate">
               Envoy
